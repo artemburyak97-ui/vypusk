@@ -70,6 +70,7 @@ input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--
 <div class="toast" id="toast"></div>
 <div id="rep"></div>
 <input type="file" id="file" accept="image/*" hidden>
+<input type="file" id="filec" accept="image/*" capture="environment" hidden>
 <script>
 var KEY='mech-act-v1';
 var ITEMS=['Двигун: рівень оливи, течі','Охолоджувальна рідина','Гальмівна система','Рульове керування','Шини та тиск','Зовнішнє освітлення','Сигналізація та покажчики','Склоочисники, омивач','Акумулятор','Кузов і скло','Аптечка, вогнегасник, знак','Документи'];
@@ -93,7 +94,7 @@ var b=[['ok','Справно'],['bad','Несправно'],['na','Н/Д']].map(
 var ph=x.ph.map(function(src,j){return'<div><img src="'+src+'" alt="Фото"><button class="x" onclick="delPh('+i+','+j+')" aria-label="Видалити фото">×</button></div>'}).join('');
 return'<div class="card"><div class="item-t">'+esc(x.t)+'</div><div class="seg">'+b+'</div>'+
 '<input placeholder="Коментар" value="'+esc(x.nt)+'" oninput="S.it['+i+'].nt=this.value;save()">'+
-'<div class="ph">'+ph+'</div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="pick('+i+')">+ Фото</button><button class="btn" style="color:var(--mut);border-color:var(--line)" onclick="delItem('+i+')">Видалити пункт</button></div></div>'}).join('')}
+'<div class="ph">'+ph+'</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"><button class="btn" onclick="pick('+i+',1)">📷 Камера</button><button class="btn" onclick="pick('+i+',0)">Галерея</button><button class="btn" style="color:var(--mut);border-color:var(--line)" onclick="delItem('+i+')">Видалити пункт</button></div></div>'}).join('')}
 function renderRows(k,key){
 document.getElementById(k).innerHTML=S[key].map(function(r,i){
 return'<div class="row"><input class="n" placeholder="Назва" value="'+esc(r.n)+'" oninput="S.'+key+'['+i+'].n=this.value;save()"><input class="q" type="number" inputmode="decimal" min="0" step="any" placeholder="'+(key==='fl'?'л':'шт')+'" value="'+esc(r.q)+'" oninput="S.'+key+'['+i+'].q=this.value;save()"><button class="btn d" onclick="delRow(\''+key+'\','+i+')" aria-label="Видалити">×</button></div>'}).join('')+'<p class="hint">'+(key==='fl'?'Кількість у літрах':'Кількість у штуках')+'</p>'}
@@ -106,13 +107,14 @@ function delItem(i){if(confirm('Видалити пункт?')){S.it.splice(i,1)
 function addRow(k){var key=k==='fluids'?'fl':'lm';S[key].push({n:'',q:''});save();renderRows(k,key)}
 function delRow(key,i){S[key].splice(i,1);save();renderRows(key==='fl'?'fluids':'lamps',key)}
 var cur=0;
-function pick(i){cur=i;var f=document.getElementById('file');f.value='';f.click()}
-document.getElementById('file').onchange=function(e){
+function pick(i,c){cur=i;var f=document.getElementById(c?'filec':'file');f.value='';f.click()}
+var onPhoto=function(e){
 var file=e.target.files[0];if(!file)return;
 var img=new Image(),u=URL.createObjectURL(file);
 img.onload=function(){var m=900,s=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*s;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
 S.it[cur].ph.push(c.toDataURL('image/jpeg',.6));URL.revokeObjectURL(u);save();renderItems()};
 img.src=u};
+document.getElementById('file').onchange=onPhoto;document.getElementById('filec').onchange=onPhoto;
 function delPh(i,j){S.it[i].ph.splice(j,1);save();renderItems()}
 function newAct(){if(confirm('Очистити акт і почати новий?')){S=fresh();save();renderAll();window.scrollTo(0,0)}}
 function report(){
