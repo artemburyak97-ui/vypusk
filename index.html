@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f3a44">
+<link rel="icon" href="icons/icon-192.png">
+<title>Акт випуску авто</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef1f2;--card:#fff;--ink:#17262c;--mut:#5d6d74;--line:#d3dcdf;--pri:#1f3a44;--onpri:#fff;--ok:#1f7a45;--bad:#c2331f;--acc:#f2b800}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10181b;--card:#1a262b;--ink:#e8eef0;--mut:#93a4ab;--line:#2c3b41;--pri:#f2b800;--onpri:#17262c;--ok:#4cc27d;--bad:#ff7b66}}
+:root[data-theme="dark"]{--bg:#10181b;--card:#1a262b;--ink:#e8eef0;--mut:#93a4ab;--line:#2c3b41;--pri:#f2b800;--onpri:#17262c;--ok:#4cc27d;--bad:#ff7b66}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background-color:var(--bg)}
+main{max-width:640px;margin:0 auto;padding:12px 12px 90px}
+h1{font-size:22px;margin:6px 0 12px}
+h2{font-size:17px;margin:22px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:3px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:44px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g2>div{margin-bottom:8px}
+.item-t{font-weight:600;margin-bottom:8px}
+.seg{display:flex;gap:6px;margin-bottom:8px}
+.seg button{flex:1;min-height:44px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;font:inherit;font-weight:600}
+.seg button.on.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.seg button.on.bad{background:var(--bad);color:#fff;border-color:var(--bad)}
+.seg button.on.na{background:var(--mut);color:#fff;border-color:var(--mut)}
+.ph{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.ph div{position:relative}
+.ph img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
+.ph .x{position:absolute;top:-6px;right:-6px;width:24px;height:24px;border-radius:50%;border:0;background:var(--bad);color:#fff;font-size:14px;line-height:1}
+.btn{min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--pri);background:transparent;color:var(--pri);font:inherit;font-weight:600}
+.btn.fill{background:var(--pri);color:var(--onpri)}
+.row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.row .n{flex:1}.row .q{width:84px}.row .d{width:44px;padding:0;color:var(--bad);border-color:var(--line)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;justify-content:center}
+.bar .btn{flex:1;max-width:200px}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.hint{color:var(--mut);font-size:13px;margin:0 0 8px}
+#rep{display:none}#rep.ov{display:block;position:fixed;inset:0;overflow:auto;background:#fff;color:#000;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 40px;z-index:50;font:14px/1.4 Arial,sans-serif}#rep.ov img{width:140px;height:105px;object-fit:cover;margin:4px 4px 0 0}#rep .tb{display:flex;gap:8px;margin-bottom:12px}#rep .tb button{flex:1;min-height:44px;font:inherit;font-weight:600}@media print{.np{display:none!important}#rep.ov{position:static;padding:0}}
+@media print{main,.bar,.toast{display:none!important}#rep{display:block!important;color:#000;background:#fff;font:13px/1.4 Arial,sans-serif}#rep h1{font-size:18px}#rep h3{font-size:14px;margin:14px 0 4px;border-bottom:1px solid #000}#rep .it{break-inside:avoid;margin-bottom:8px}#rep img{width:150px;height:110px;object-fit:cover;margin:4px 4px 0 0;border:1px solid #999}#rep table{border-collapse:collapse;width:100%}#rep td{border:1px solid #999;padding:3px 6px}:root{padding:0}}
+</style>
+</head>
+<body>
+<main>
+<h1>Акт випуску автомобіля</h1>
+<div class="card" id="head"></div>
+<h2>Огляд перед випуском</h2>
+<div id="items"></div>
+<button class="btn" onclick="addItem()">+ Додати пункт</button>
+<h2>Видано технічні рідини</h2>
+<div class="card"><div id="fluids"></div><button class="btn" onclick="addRow('fluids')">+ Додати рідину</button></div>
+<h2>Видано лампи</h2>
+<div class="card"><div id="lamps"></div><button class="btn" onclick="addRow('lamps')">+ Додати лампу</button></div>
+<h2>Висновок</h2>
+<div class="card"><label>Примітки</label><textarea id="notes" rows="3"></textarea>
+<label style="margin-top:8px">Дозвіл на випуск</label>
+<div class="seg" id="verdict"></div></div>
+</main>
+<div class="bar">
+<button class="btn" onclick="newAct()">Новий акт</button>
+<button class="btn" onclick="pdf()">PDF</button>
+<button class="btn fill" onclick="share()">Поділитися</button>
+</div>
+<div class="toast" id="toast"></div>
+<div id="rep"></div>
+<input type="file" id="file" accept="image/*" hidden>
+<script>
+var KEY='mech-act-v1';
+var ITEMS=['Двигун: рівень оливи, течі','Охолоджувальна рідина','Гальмівна система','Рульове керування','Шини та тиск','Зовнішнє освітлення','Сигналізація та покажчики','Склоочисники, омивач','Акумулятор','Кузов і скло','Аптечка, вогнегасник, знак','Документи'];
+var FLU=['Моторна олива','Антифриз','Рідина омивача','Гальмівна рідина','Рідина ГПК'];
+var LAM=['H4','H7','Габарит W5W','Стоп/габарит P21/5W','Поворот PY21W'];
+var S;
+function today(){return new Date().toISOString().slice(0,10)}
+function fresh(){return{h:{date:today(),veh:'',drv:'',odo:''},it:ITEMS.map(function(t){return{t:t,st:'',nt:'',ph:[]}}),fl:FLU.map(function(n){return{n:n,q:''}}),lm:LAM.map(function(n){return{n:n,q:''}}),notes:'',ok:''}}
+function load(){try{var r=localStorage.getItem(KEY);S=r?JSON.parse(r):fresh()}catch(e){S=fresh()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Немає місця: видаліть частину фото')}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.className='toast show';setTimeout(function(){t.className='toast'},2200)}
+function renderHead(){
+document.getElementById('head').innerHTML='<div class="g2"><div><label>Дата</label><input type="date" value="'+esc(S.h.date)+'" oninput="S.h.date=this.value;save()"></div>'+
+'<div><label>Держномер</label><input value="'+esc(S.h.veh)+'" oninput="S.h.veh=this.value;save()"></div>'+
+'<div><label>Водій</label><input value="'+esc(S.h.drv)+'" oninput="S.h.drv=this.value;save()"></div>'+
+'<div><label>Пробіг, км</label><input type="number" inputmode="numeric" value="'+esc(S.h.odo)+'" oninput="S.h.odo=this.value;save()"></div></div>'}
+function renderItems(){
+document.getElementById('items').innerHTML=S.it.map(function(x,i){
+var b=[['ok','Справно'],['bad','Несправно'],['na','Н/Д']].map(function(p){return'<button class="'+p[0]+(x.st===p[0]?' on':'')+'" onclick="setSt('+i+',\''+p[0]+'\')">'+p[1]+'</button>'}).join('');
+var ph=x.ph.map(function(src,j){return'<div><img src="'+src+'" alt="Фото"><button class="x" onclick="delPh('+i+','+j+')" aria-label="Видалити фото">×</button></div>'}).join('');
+return'<div class="card"><div class="item-t">'+esc(x.t)+'</div><div class="seg">'+b+'</div>'+
+'<input placeholder="Коментар" value="'+esc(x.nt)+'" oninput="S.it['+i+'].nt=this.value;save()">'+
+'<div class="ph">'+ph+'</div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="pick('+i+')">+ Фото</button><button class="btn" style="color:var(--mut);border-color:var(--line)" onclick="delItem('+i+')">Видалити пункт</button></div></div>'}).join('')}
+function renderRows(k,key){
+document.getElementById(k).innerHTML=S[key].map(function(r,i){
+return'<div class="row"><input class="n" placeholder="Назва" value="'+esc(r.n)+'" oninput="S.'+key+'['+i+'].n=this.value;save()"><input class="q" type="number" inputmode="decimal" min="0" step="any" placeholder="'+(key==='fl'?'л':'шт')+'" value="'+esc(r.q)+'" oninput="S.'+key+'['+i+'].q=this.value;save()"><button class="btn d" onclick="delRow(\''+key+'\','+i+')" aria-label="Видалити">×</button></div>'}).join('')+'<p class="hint">'+(key==='fl'?'Кількість у літрах':'Кількість у штуках')+'</p>'}
+function renderVerdict(){
+document.getElementById('verdict').innerHTML=[['ok','Випустити'],['bad','Не випускати']].map(function(p){return'<button class="'+p[0]+(S.ok===p[0]?' on':'')+'" onclick="S.ok=\''+p[0]+'\';save();renderVerdict()">'+p[1]+'</button>'}).join('')}
+function renderAll(){renderHead();renderItems();renderRows('fluids','fl');renderRows('lamps','lm');renderVerdict();var n=document.getElementById('notes');n.value=S.notes;n.oninput=function(){S.notes=n.value;save()}}
+function setSt(i,v){S.it[i].st=S.it[i].st===v?'':v;save();renderItems()}
+function addItem(){var t=prompt('Назва пункту');if(t){S.it.push({t:t,st:'',nt:'',ph:[]});save();renderItems()}}
+function delItem(i){if(confirm('Видалити пункт?')){S.it.splice(i,1);save();renderItems()}}
+function addRow(k){var key=k==='fluids'?'fl':'lm';S[key].push({n:'',q:''});save();renderRows(k,key)}
+function delRow(key,i){S[key].splice(i,1);save();renderRows(key==='fl'?'fluids':'lamps',key)}
+var cur=0;
+function pick(i){cur=i;var f=document.getElementById('file');f.value='';f.click()}
+document.getElementById('file').onchange=function(e){
+var file=e.target.files[0];if(!file)return;
+var img=new Image(),u=URL.createObjectURL(file);
+img.onload=function(){var m=900,s=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*s;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+S.it[cur].ph.push(c.toDataURL('image/jpeg',.6));URL.revokeObjectURL(u);save();renderItems()};
+img.src=u};
+function delPh(i,j){S.it[i].ph.splice(j,1);save();renderItems()}
+function newAct(){if(confirm('Очистити акт і почати новий?')){S=fresh();save();renderAll();window.scrollTo(0,0)}}
+function report(){
+var L=['АКТ ВИПУСКУ АВТО','Дата: '+S.h.date,'Номер: '+S.h.veh,'Водій: '+S.h.drv,'Пробіг: '+S.h.odo+' км','','ОГЛЯД:'];
+var nm={ok:'справно',bad:'НЕСПРАВНО',na:'н/д','':'не відмічено'};
+S.it.forEach(function(x){L.push('- '+x.t+': '+nm[x.st]+(x.nt?' ('+x.nt+')':'')+(x.ph.length?' [фото: '+x.ph.length+']':''))});
+L.push('','ВИДАНО РІДИНИ:');S.fl.forEach(function(r){if(r.q)L.push('- '+r.n+': '+r.q+' л')});
+L.push('','ВИДАНО ЛАМПИ:');S.lm.forEach(function(r){if(r.q)L.push('- '+r.n+': '+r.q+' шт')});
+if(S.notes)L.push('','Примітки: '+S.notes);
+L.push('','Висновок: '+(S.ok==='ok'?'випущено':S.ok==='bad'?'НЕ випущено':'не вказано'));return L.join('\n')}
+function closeRep(){document.getElementById('rep').className=''}
+function showTxt(t){var r=document.getElementById('rep');r.innerHTML='<div class="tb"><button onclick="closeRep()">← Назад</button><button id="cp">Копіювати</button></div><textarea id="tx" style="width:100%;height:70vh;color:#000;background:#fff">'+esc(t)+'</textarea>';r.className='ov';var a=document.getElementById('tx');document.getElementById('cp').onclick=function(){a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}toast(ok?'Скопійовано':'Затисніть текст і виберіть «Копіювати»')}}
+function shareFallback(t){if(navigator.share){navigator.share({title:'Акт випуску '+S.h.veh,text:t}).catch(function(e){if(!e||e.name!=='AbortError')showTxt(t)});return}showTxt(t)}
+function share(){var t=report();return shareFallback(t);
+if(navigator.share){navigator.share({title:'Акт випуску '+S.h.veh,text:t}).catch(function(){})}
+else if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast('Звіт скопійовано')},function(){toast('Не вдалося скопіювати')})}
+else toast('Поділитися недоступно')}
+function pdf(){
+var nm={ok:'Справно',bad:'НЕСПРАВНО',na:'Н/Д','':'Не відмічено'};
+var h='<h1>Акт випуску автомобіля</h1><p>Дата: '+esc(S.h.date)+' &nbsp; Номер: <b>'+esc(S.h.veh)+'</b> &nbsp; Водій: '+esc(S.h.drv)+' &nbsp; Пробіг: '+esc(S.h.odo)+' км</p><h3>Огляд</h3>';
+S.it.forEach(function(x){h+='<div class="it"><b>'+esc(x.t)+':</b> '+nm[x.st]+(x.nt?' — '+esc(x.nt):'')+'<br>'+x.ph.map(function(p){return'<img src="'+p+'">'}).join('')+'</div>'});
+function tb(a,u){var r=a.filter(function(x){return x.q});return r.length?'<table>'+r.map(function(x){return'<tr><td>'+esc(x.n)+'</td><td width="80">'+esc(x.q)+' '+u+'</td></tr>'}).join('')+'</table>':'<p>—</p>'}
+h+='<h3>Видано технічні рідини</h3>'+tb(S.fl,'л')+'<h3>Видано лампи</h3>'+tb(S.lm,'шт');
+if(S.notes)h+='<h3>Примітки</h3><p>'+esc(S.notes)+'</p>';
+h+='<h3>Висновок</h3><p>'+(S.ok==='ok'?'Випущено':S.ok==='bad'?'НЕ випущено':'Не вказано')+'</p><p>Підпис механіка: ____________</p>';
+document.getElementById('rep').innerHTML=h;
+var r=document.getElementById('rep');r.innerHTML='<div class="tb np"><button onclick="closeRep()">← Назад</button><button onclick="try{window.print()}catch(e){}">Друк / PDF</button></div><p class="np" style="font-size:12px;color:#555">Якщо «Друк» не відкривається: меню Chrome ⋮ → Поділитися → Друк, або зробіть скріншот. Надійно працює, коли застосунок відкрито окремо в Chrome.</p>'+h;r.className='ov';window.scrollTo(0,0)}
+load();renderAll();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
+</script>
+</body>
+</html>
